@@ -22,16 +22,6 @@ Resources:
           ToPort: 65535
           CidrIp: 0.0.0.0/0
 
-#  BastionServerLaunchConfig:
-#    Type: AWS::AutoScaling::LaunchConfiguration
-#    Properties:
-#      #UserData:
-#      ImageId: ami-005bdb005fb00e791
-#      SecurityGroups:
-#        - Ref: BastionServerSecGroup
-#      InstanceType: t3.small
-#
-
   Bastion1:
     Type: AWS::EC2::Instance
     DependsOn:
