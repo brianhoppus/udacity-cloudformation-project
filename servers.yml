@@ -156,3 +156,9 @@ Resources:
       ListenerArn: !Ref 'Listener'
       Priority: 1
 
+Outputs:
+  LoadBalancerURL:
+    Description: Publicly Routable DNS name for the LoadBalancer
+    Value: !Join ["", ["http://",!GetAtt WebAppLB.DNSName]]
+    Export:
+      Name: !Sub ${EnvironmentName}-LB
