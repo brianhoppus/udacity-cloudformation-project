@@ -58,18 +58,29 @@ Resources:
           ToPort: 65535
           CidrIp: 0.0.0.0/0
 
-  Bastion1:
-    Type: AWS::EC2::Instance
-    DependsOn:
-      - BastionServerSecGroup
+  BastionLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      SecurityGroupIds:
+      ImageId: ami-0f165346951da18c9
+      SecurityGroups:
         - Ref: BastionServerSecGroup
-      SubnetId:
-        Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"
-      ImageId: ami-005bdb005fb00e791
+      IamInstanceProfile:
+        Ref: "WebServerInstanceProfile"
       InstanceType: t3.small
       KeyName: udacity
+
+  BastionGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - Fn::ImportValue:
+            !Sub "${EnvironmentName}-PUB-NETS"
+      LaunchConfigurationName:
+        Ref: BastionLaunchConfig
+      MinSize: '2'
+      MaxSize: '2'
+      TargetGroupARNs:
+        - Ref: WebAppTargetGroup
 
   WebServerSecGroup:
     Type: AWS::EC2::SecurityGroup
@@ -111,7 +122,7 @@ Resources:
       ImageId: ami-0f165346951da18c9
       SecurityGroups:
         - Ref: WebServerSecGroup
-      IamInstanceProfile: 
+      IamInstanceProfile:
         Ref: "WebServerInstanceProfile"
       InstanceType: t3.medium
       BlockDeviceMappings:
