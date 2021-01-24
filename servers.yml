@@ -4,6 +4,42 @@ Parameters:
     Type: String
 
 Resources:
+  S3ReadOnlyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${EnvironmentName}-IAM-Role"
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          Effect: Allow
+          Principal:
+            Service:
+              - ec2.amazonaws.com
+          Action:
+            - sts:AssumeRole
+      Path: "/"
+
+  S3IAMPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${EnvironmentName}-IAM-Policy"
+      PolicyName: root
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: "s3:*"
+            Resource: "*"
+      Roles:
+        - !Ref S3ReadOnlyRole
+
+  WebServerInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref S3ReadOnlyRole
+
   BastionServerSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -65,13 +101,18 @@ Resources:
           #!/bin/bash
           apt update
           apt upgrade -y
+          apt install unzip awscli -y
           apt install apache2 -y
           systemctl start apache2.service
           cd /var/www/html
-          echo "Udacity Demo Web Server Up and Running!" > index.html
+          aws s3 cp s3://udacity-demo-1/udacity.zip .
+          unzip -o udacity.zip
+          systemctl restart apache2.service
       ImageId: ami-0f165346951da18c9
       SecurityGroups:
         - Ref: WebServerSecGroup
+      IamInstanceProfile: 
+        Ref: "WebServerInstanceProfile"
       InstanceType: t3.medium
       BlockDeviceMappings:
         - DeviceName: "/dev/sdk"
