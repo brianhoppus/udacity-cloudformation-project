@@ -18,9 +18,14 @@
 
 ### Accessing Bastion Hosts
 The bastion hosts __do not__ host any private ssh keys to help ensure that 
-private keys are not compromised. You must use ssh-agent to add the key on
-your local machine, and then use agent forwarding to be able to jump from
-the bastion host to the web servers in the private subnets:
+private keys are not compromised. 
+
+Add `KeyName: udacity` as a property to Launch Configurations. Then you arr
+ready to configuration a key named, "udacity" on your local system.
+
+Use ssh-agent to add the key on your local machine, and then use ssh agent
+forwarding to be able to jump from the bastion host to the web servers
+in the private subnets:
 ```
 ssh-agent -s
 ssh-add -k ~/.ssh/udacity.pem

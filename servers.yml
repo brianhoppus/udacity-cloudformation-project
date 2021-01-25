@@ -22,7 +22,7 @@ Parameters:
     Description: The size and type of server
     Type: String
     Default: "t3.medium"
- 
+
 
 Resources:
   S3ReadOnlyRole:
@@ -88,7 +88,6 @@ Resources:
       IamInstanceProfile:
         Ref: "WebServerInstanceProfile"
       InstanceType: t3.small
-      KeyName: udacity
 
   BastionGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -150,7 +149,6 @@ Resources:
         - DeviceName: "/dev/sdk"
           Ebs:
             VolumeSize: !Ref WebAppLaunchConfigDiskSize
-      KeyName: udacity
 
   WebAppGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
