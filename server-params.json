@@ -2,5 +2,21 @@
     {
         "ParameterKey": "EnvironmentName",
         "ParameterValue": "UdacityProject"
+    },
+    {
+        "ParameterKey": "WebAppLaunchConfigDiskSize",
+        "ParameterValue": "10"
+    },
+    {
+        "ParameterKey": "WebAppGroupMinSize",
+        "ParameterValue": "2"
+    },
+    {
+        "ParameterKey": "WebAppGroupMaxSize",
+        "ParameterValue": "4"
+    },
+    {
+        "ParameterKey": "WebAppLaunchConfigInstanceType",
+        "ParameterValue": "t3.medium"
     }
 ]

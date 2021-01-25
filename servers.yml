@@ -3,6 +3,27 @@ Parameters:
     Description: Name that will be prefixed to resource names
     Type: String
 
+  WebAppLaunchConfigDiskSize:
+    Description: Disk size for the Web Applicaiton Launch Configuration
+    Type: String
+    Default: "10"
+
+  WebAppGroupMinSize:
+    Description: The minimum number of web servers
+    Type: String
+    Default: "2"
+
+  WebAppGroupMaxSize:
+    Description: The maximum number of web servers
+    Type: String
+    Default: "4"
+
+  WebAppLaunchConfigInstanceType:
+    Description: The size and type of server
+    Type: String
+    Default: "t3.medium"
+ 
+
 Resources:
   S3ReadOnlyRole:
     Type: AWS::IAM::Role
@@ -124,11 +145,11 @@ Resources:
         - Ref: WebServerSecGroup
       IamInstanceProfile:
         Ref: "WebServerInstanceProfile"
-      InstanceType: t3.medium
+      InstanceType: !Ref WebAppLaunchConfigInstanceType
       BlockDeviceMappings:
         - DeviceName: "/dev/sdk"
           Ebs:
-            VolumeSize: '10'
+            VolumeSize: !Ref WebAppLaunchConfigDiskSize
       KeyName: udacity
 
   WebAppGroup:
@@ -139,8 +160,8 @@ Resources:
             !Sub "${EnvironmentName}-PRIV-NETS"
       LaunchConfigurationName:
         Ref: WebAppLaunchConfig
-      MinSize: '2'
-      MaxSize: '4'
+      MinSize: !Ref WebAppGroupMinSize
+      MaxSize: !Ref WebAppGroupMaxSize
       TargetGroupARNs:
         - Ref: WebAppTargetGroup
 
